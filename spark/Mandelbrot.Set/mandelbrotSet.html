@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mandelbrot Set</title>
+	<script src="./mandelbrot.js"></script>
+	<script>
+		window.onload = function(){
+			var width = 900;
+			var height = 600;
+			var mandelbrot = new MandelbrotSet(width,height);
+			var canvas = document.getElementById("ss");
+			canvas.width = width;
+			canvas.height = height;
+			var ctx = canvas.getContext("2d");
+			var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			var pixels = image.data;
+			var div = 0;
+			var o = 0;
+			for(var y=0,yl=canvas.height;y<yl;y++){
+				for(var x=0,xl=canvas.width;x<xl;x++){
+					div = mandelbrot.computePixel(x,y);
+					if(!div){
+						o = 4 * (xl * y + x);
+						pixels[o]=0x00;
+						pixels[o+1]=0x00;
+						pixels[o+2]=0x00;
+						pixels[o+3]=0xFF;
+					}
+				}
+			}
+			ctx.putImageData(image, 0, 0);
+			console.log("fin");
+		};
+	</script>
+	<style>
+	</style>
+</head>
+<body>
+	<canvas id="ss"></canvas>
+</body>
+</html>
