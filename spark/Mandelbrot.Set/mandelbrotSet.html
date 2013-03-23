@@ -24,6 +24,8 @@
 			canvas.addEventListener("mousedown",function(event){
 				this.cX = event.offsetX;
 				this.cY = event.offsetY;
+				// mouseDown;
+				this.md = true;
 				//console.log(this.cX,this.cY);
 			});
 			canvas.addEventListener("mouseup",function(event){
@@ -31,8 +33,36 @@
 				eY = event.offsetY;
 				mandelbrot.setZoom(this.cX,this.cY,eX,eY);
 				refreshImage();
+				this.md = false;
 			});
+			canvas.addEventListener("mousemove",function(event){
+				if(!this.md)return;
+				x1 = this.cX;
+				y1 = this.cY;
+				x2 = event.offsetX;
+				y2 = event.offsetY;
+				ctx.putImageData(image, 0, 0);
+				ctx.strokeRect(x2+0.5,y2+0.5,x1-x2,y1-y2);
+				if(mandelbrot.fixedRatio){
+					var ratio = this.width / this.height;
+					var t;
+					if((x2-x1)/(y2-y1) > ratio){
+						t = (x1 + x2) / 2;
+						x1 = t - 0.5 * (y2 - y1) * ratio;
+						x2 = t + 0.5 * (y2 - y1) * ratio;
+					}else{
+						t = (y1 + y2) / 2;
+						y1 = t - 0.5 * (x2 - x1) / ratio;
+						y2 = t + 0.5 * (x2 - x1) / ratio;
+					}
+					ctx.fillRect(x2+0.5,y2+0.5,x1-x2,y1-y2);
+				}
+			});
+
 			ctx = canvas.getContext("2d");
+			ctx.strokeStyle ="rgb(255,255,255)";
+			ctx.fillStyle = "rgba(63, 0, 191, 0.5)";
+			ctx.lineWidth = 1;
 			image = ctx.getImageData(0, 0, canvas.width, canvas.height);
 			refreshImage();			
 		};

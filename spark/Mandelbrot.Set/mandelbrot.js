@@ -4,11 +4,12 @@ var MandelbrotSet = function(canvasWidth,canvasHeight){
 	this._y = canvasHeight;
 	this._precision = 512;
 	this._boundary = 1000;
+	// zoom
 	this._x1 = -2.0;
 	this._y1 = 1.0;
 	this._x2 = 1.0;
 	this._y2 = -1.0;
-
+	// zoomParameters
 	this.fixedRatio = false;
 }
 
@@ -84,78 +85,3 @@ MandelbrotSet.prototype.computePicture = function(pixels){
 	}
 	return pixels;
 }
-
-
-
-
-// ..degree = 0..360
-var Hue = function(degree){
-	// this._degree = 360 * scale;
-	//var h = this._degree/60; // sector 0 to 5;
-	
-	var h = degree / 60;
-	var sector = Math.floor(h);
-	// get the fatorial part
-	var f = h - sector; 
-
-	var v = 0xFF;
-	var s = 0xFF;
-
-	var p = v * (1 - s);
-	var q = v * (1 - s * f);
-	var t = v * (1 - s * (1 - f));
-
-	var r = 0;
-	var g = 0;
-	var b = 0;
-	switch(sector){
-		case 0:
-			r = v;
-			g = t;
-			b = p;
-			break;
-		
-		case 1:
-			r = q;
-			g = v;
-			b = p;
-			break;
-		
-		case 2:
-			r = p;
-			g = v;
-			b = t;
-			break;
-		
-		case 3:
-			r = p;
-			g = q;
-			b = v;
-			break;
-		
-		case 4:
-			r = t;
-			g = p;
-			b = v;
-			break;
-
-		default:
-		//case 5:
-			r = v;
-			g = p;
-			b = q;
-			break;
-	}
-	this._r = r;
-	this._g = g;
-	this._b = b;
-}
-Hue.prototype.getR = function() {
-	return this._r;
-};
-Hue.prototype.getG = function() {
-	return this._g;
-};
-Hue.prototype.getB = function() {
-	return this._b;
-};
