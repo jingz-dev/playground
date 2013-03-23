@@ -4,34 +4,49 @@
 	<title>Mandelbrot Set</title>
 	<script src="./mandelbrot.js"></script>
 	<script>
+		var ctx;
+		var image;
+		var mandelbrot;
 		window.onload = function(){
 			var width = 900;
 			var height = 600;
-			var mandelbrot = new MandelbrotSet(width,height);
+
+			document.body.style.width = width + "px";
+						
+			mandelbrot = new MandelbrotSet(width,height);
+			mandelbrot.fixedRatio = true;
+			// mandelbrot.setZoom(-1,1,0,0);
+
 			var canvas = document.getElementById("ss");
 			canvas.width = width;
 			canvas.height = height;
-			var ctx = canvas.getContext("2d");
-			var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			var pixels = image.data;
-			var div = 0;
-			var o = 0;
-			for(var y=0,yl=canvas.height;y<yl;y++){
-				for(var x=0,xl=canvas.width;x<xl;x++){
-					div = mandelbrot.computePixel(x,y);
-					o = 4 * (xl * y + x);
-					pixels[o]=0xFF * div;
-					pixels[o+1]=0xFF * div;
-					pixels[o+2]=0xFF * div;
-					pixels[o+3]=0xFF;
+			// register mouse event
+			canvas.addEventListener("mousedown",function(event){
+				this.cX = event.offsetX;
+				this.cY = event.offsetY;
+				//console.log(this.cX,this.cY);
+			});
+			canvas.addEventListener("mouseup",function(event){
+				eX = event.offsetX;
+				eY = event.offsetY;
+				mandelbrot.setZoom(this.cX,this.cY,eX,eY);
+				refreshImage();
+			});
+			ctx = canvas.getContext("2d");
+			image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			refreshImage();			
+		};
 
-				}
-			}
+		function refreshImage(){
+			mandelbrot.computePicture(image.data);
 			ctx.putImageData(image, 0, 0);
 			console.log("fin");
 		};
+
+
 	</script>
 	<style>
+		body{width:960px;margin:0 auto;}
 	</style>
 </head>
 <body>
