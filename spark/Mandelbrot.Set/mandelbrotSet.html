@@ -19,13 +19,12 @@
 			for(var y=0,yl=canvas.height;y<yl;y++){
 				for(var x=0,xl=canvas.width;x<xl;x++){
 					div = mandelbrot.computePixel(x,y);
-					if(!div){
-						o = 4 * (xl * y + x);
-						pixels[o]=0x00;
-						pixels[o+1]=0x00;
-						pixels[o+2]=0x00;
-						pixels[o+3]=0xFF;
-					}
+					o = 4 * (xl * y + x);
+					pixels[o]=0xFF * div;
+					pixels[o+1]=0xFF * div;
+					pixels[o+2]=0xFF * div;
+					pixels[o+3]=0xFF;
+
 				}
 			}
 			ctx.putImageData(image, 0, 0);
