@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Euclidean Distance</title>
+	<script src="../encog/encog.js"></script>
+	<script>
+var writingScreenCtx;
+var writingScreen;
+var monitoringScreenCtx;
+var monitoringScreen;
+window.onload=function(){
+	initWritingScreen(document.getElementById("writingScreen"));
+	initMonitoringScreen(document.getElementById("monitoringScreen"));
+
+
+}
+function initWritingScreen(ws){
+	writingScreen = ws;
+	writingScreenCtx = writingScreen.getContext("2d");
+	writingScreenCtx.strokeStyle = "#000000";
+	ws.width = 400;
+	ws.height = 300;
+	ws.addEventListener("mousemove",refreshMousePosition);
+	ws.addEventListener("mousedown",recordMousePosition);
+	ws.dataset.cacheX = ws.dataset.cacheY = 0;
+}
+function initMonitoringScreen(ms){
+	monitoringScreen = ms;
+	ms.width = 100;
+	ms.height = 75;
+}
+function refreshMousePosition(event){
+	if(event.which !=0){
+		var cacheX = parseInt(writingScreen.dataset.cacheX);
+		var cacheY = parseInt(writingScreen.dataset.cacheY);
+		drawLine(event.offsetX,event.offsetY,cacheX,cacheY);
+	}
+	writingScreen.dataset.cacheX = event.offsetX;
+	writingScreen.dataset.cacheY = event.offsetY;
+}
+function recordMousePosition(event){
+	event.preventDefault();
+	event.stopPropagation();
+}
+
+function drawLine(x1,y1,x2,y2){
+	var ctx = writingScreenCtx;
+	ctx.beginPath();
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	ctx.stroke();
+}
+	</script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<canvas id="writingScreen"></canvas>
+	<canvas id="monitoringScreen"></canvas>
+</body>
+</html>
