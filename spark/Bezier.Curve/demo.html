@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bezeir Curve Demo</title>
+	<script>
+var drawingCanvas;
+var drawingCtx;
+
+window.onload=function(){
+	initDrawingCanvas(document.getElementById("drawingCanvas"));
+	drawDemoBezierCurve();
+}
+
+function initDrawingCanvas(canvas){
+	drawingCanvas = canvas;
+	drawingCtx = canvas.getContext("2d");
+	drawingCanvas.width = 800;
+	drawingCanvas.height = 600;
+	drawingCtx.strokeStyle = "#000000";
+}
+
+function drawDemoBezierCurve(){
+	var vecA = new AVec2d(300,50);
+	var vecB = new AVec2d(0,100);
+	for(var i = 0;i<100;i++){
+		var t = i/100;
+		var x = t * t * vecA.x + (1-t) * (1-t) * vecB.x;
+		var y = t * t * vecA.y + (1-t) * (1-t) * vecB.y; 
+		drawCoord(x,y);
+	} 
+}
+function drawCoord(x,y){
+	// transform Y
+	x = x + drawingCanvas.width/2;
+	y = -y + drawingCanvas.height/2;
+
+	drawingCtx.beginPath();
+	drawingCtx.moveTo(x,y);
+	drawingCtx.lineTo(x+1,y+1);
+	drawingCtx.stroke();
+}
+
+// Abstract 2d Vector with only x,y coord info (direction and norm)
+var AVec2d = function(x,y){
+	this.x=x;
+	this.y=y;
+}
+	</script>
+</head>
+<body>
+	<canvas id="drawingCanvas"></canvas>
+</body>
+</html>
