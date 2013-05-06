@@ -1,6 +1,7 @@
 import "dart:math";
 
 void main(){
+  testQueue();
   testTree();
 }
 
