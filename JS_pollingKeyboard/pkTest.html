@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="./keyboard.js"></script>
+	<script>
+		// config design
+		Keyboard.config.chord.enable = true || false;
+		Keyboard.config.chord.keys = 3;
+		Keyboard.config.debug = true;
+
+		// init design
+
+		// register all
+		Keyboard.attach();
+		// register keys
+		Keyboard.attach(Keys.ARROW || Keys.NUMBER || Keys.WSAD);
+		// unregister all
+		Keyboard.detach();
+		// unregister keys
+		Keyboard.detach(Keys.NUMBER);
+
+		// method design
+
+		// DOES NOT RESPOND TO UNREGISTERED KEYS
+		Keyboard.queueInputStream(Keys.Key.ENTER);
+		// read up to 128 chars then terminate the inputStream, or terminate on ENTER button pressed
+		Keyboard.queueInputStream(Keys.Key.ENTER, 128);
+		Keyboard.terminateInputStream();
+
+
+		// keytolistento, callfunction, continuous listen(always listen to the key)
+		// used for pause or cheats
+		Keyboard.listenKey(Key.UP, function(){}, true);
+
+		// TODO some keyboard usages
+	</script>
+</head>
+<body>
+
+</body>
+</html>
