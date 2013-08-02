@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Interactive MVC Test</title>
+	<script>
+var e;
+var view;
+window.onload = function(){
+	var FPS = 60;
+	e = new RippleE(800, 600);
+	view = new View("view", 800, 600);
+	view.setModel(e.getModel());
+	view.click(e);
+	setInterval(run, 1000/FPS);
+};
+function run(){
+	e.update();
+	view.render();
+}
+var RippleE = function(width, height){
+	this.width = width;
+	this.height = height;
+	this.FPS = 60;
+	this.model = [];
+};
+RippleE.prototype.getModel = function() {
+	return this.model;
+};
+RippleE.prototype.poke = function(x, y) {
+	console.log([x,y]);
+	this.model.push(new Circle(x, y, 0));	
+};
+RippleE.prototype.update = function() {
+	var model = this.model;
+	var FPS = this.FPS;
+	for(var i = 0; i < model.length; i++){
+		model[i].radius += model[i].delta / FPS;
+		model[i].life -= model[i].delta / FPS;
+		if(model[i].life <= 0){
+			model[i] = model[model.length - 1];
+			model.pop();
+		}
+	}
+};
+var Circle = function(x, y, r){
+	this.x = x;
+	this.y = y;
+	this.radius = r;
+	this.life = 10 + Math.random() * 200;
+	this.delta = 30 + Math.random() * 60;
+};
+
+var View = function(id, width, height){
+	this.canvas = document.getElementById(id);
+	this.width = width;
+	this.height = height;
+	this.canvas.width = width;
+	this.canvas.height = height;
+	this.context = this.canvas.getContext("2d");
+}
+View.prototype.setModel = function(model) {
+	this.model = model;
+};
+View.prototype.render = function(){
+	var context = this.context;
+	context.clearRect(0 ,0 , this.width , this.height);
+	context.lineWidth = 1;
+	context.strokeStyle = '#000000';
+	var model = this.model;
+	for(var i = 0, il = model.length; i < il; i++){
+		context.beginPath();
+		
+		context.arc(model[i].x, model[i].y, model[i].radius, 0, 2 * Math.PI, false);
+		context.stroke();
+	}
+};
+View.prototype.click = function(control){
+	this.canvas.addEventListener("click",function(e){
+		x = e.offsetX;
+		y = e.offsetY;
+		control.poke(x, y);
+	});
+}
+	</script>
+</head>
+<body>
+	<canvas id="view"></canvas>
+</body>
+</html>
