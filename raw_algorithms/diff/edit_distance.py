@@ -18,9 +18,11 @@ def edit_distance(a, b, i, j):
 		return min(edit_distance(a, b, i-1, j) + 1,edit_distance(a, b, i, j-1) + 1, edit_distance(a, b, i-1, j-1) + diff(a, b, i, j))
 """
 def edit_distance(a, b, i, j):
-	if i < 0:
+	if i == j == -1:
+		return 0
+	elif i < 0:
 		return abs(j) + 1
-	if j < 0:
+	elif j < 0:
 		return abs(i) + 1
 	else:
 		return min(edit_distance(a, b, i-1, j) + 1,edit_distance(a, b, i, j-1) + 1, edit_distance(a, b, i-1, j-1) + diff(a, b, i, j))
