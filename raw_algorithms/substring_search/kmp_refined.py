@@ -1,6 +1,10 @@
 def pattern_to_dfa(pat):
+	"""
+	transforms a string pattern into a deterministic finite state machine
+	dfa is a dictionary using transition characters as keys, a list as a value
+	"""
 	transition = set(pat)
-	# all points to the same list
+	# all points to the same list (wrong)
 	# dfa = dict.fromkeys(transition, [0 for i in range(len(pat))])
 	
 	# this works (dict comprehension)
@@ -20,6 +24,9 @@ def pattern_to_dfa(pat):
 	return dfa
 
 def match(string, pattern):
+	"""
+	matches pattern occuring in string
+	"""
 	dfa = pattern_to_dfa(pattern)
 	state = 0
 	for i in range(len(string)):

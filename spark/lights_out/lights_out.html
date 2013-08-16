@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lights Out</title>
+		<script>
+var board = [[0,0,0,0,1],[0,0,0,1,1],[0,0,1,1,1],[0,1,1,1,1],[1,1,1,1,1]];
+var initialLights = [[4,4],[0,4],[2,3]];
+function initBoard(){
+	var l = new LightsOut(board);
+	var b = l.createBoard();
+	b.drawBoard(l.board);
+	b.drawState(l.state);
+	// l.setLights(initialLights);
+	// l.run();
+
+}
+function isZeroMatrix(a){
+	var row = a.length;
+	var col = a[0].length;
+	for(var i = 0; i < row; i++){
+		for(var j = 0; j < col; j++){
+			if(a[i][j]!=0)return false;
+		}
+	}
+	return true;
+}
+function mkZeroMatrix(col, row){
+	var s = new Array(row);
+	for(var i = 0; i < row; i++){
+		s[i] = new Array(col);
+		for(var j = 0; j < col; j++){
+			s[i][j] = 0;
+		}
+	}
+	return s;
+}
+// matrix operation
+function matop(a, b, op){
+	var row = a.length;
+	var col = a[0].length;
+	var s = new Array(row);
+	for(var i = 0; i < row; i++){
+		s[i] = new Array(col);
+		for(var j = 0; j < col; j++){
+			s[i][j] = op(a[i][j], b[i][j]);
+		}
+	}
+	return s;
+}
+function XOR(a, b){
+	return a^b;
+}
+function AND(a, b){
+	return a&b;
+}
+function OR(a, b){
+	return a|b;
+}
+var LightsOut = function(board){
+	// sanity check
+	var tilesX = board[0].length;
+	var tilesY = board.length;
+	for(var i = 1; i < tilesY; i++){
+		if(board[i].length != tilesX)
+			throw "bad board data";
+	}
+	// copy board
+	this.board  = matop(board, board, AND);
+	this.tilesX = tilesX;
+	this.tilesY = tilesY;
+	this.state = mkZeroMatrix(tilesX, tilesY);
+}
+LightsOut.prototype.toggle = function(x, y) {
+	var toggleMatrix = mkZeroMatrix(this.tilesX, this.tilesX);
+	toggleMatrix[x][y] = 1;
+	if(x > 0)
+		toggleMatrix[x-1][y] = 1;
+	if(x < this.tilesX - 1)
+		toggleMatrix[x+1][y] = 1;
+	if(y > 0)
+		toggleMatrix[x][y-1] = 1;
+	if(y < this.tilesY - 1)
+		toggleMatrix[x][y+1] = 1;
+	this.state = matop(this.state, toggleMatrix, XOR);
+	this.state = matop(this.state, this.board, AND);
+};
+LightsOut.prototype.createBoard = function(elem) {
+	return new Board(this.tilesX, this.tilesY, elem);
+};
+var Board = function(x, y, elem){
+	this.unit = 50;
+	this.tilesX = x;
+	this.tilesY = y;
+	var canvas = document.createElement("canvas");
+	canvas.height = y * this.unit;
+	canvas.width = x * this.unit;
+	this.canvas = canvas;
+	if(elem){
+		elem.appendChild(canvas);
+	}else{
+		document.body.appendChild(canvas);
+	}
+}
+Board.prototype.drawBoard = function(board) {
+	var context = this.canvas.getContext('2d');
+	context.clearRect(0 ,0 , this.canvas.width , this.canvas.height);
+	var row = board.length;
+	var col = board[0].length;
+	context.fillStyle="#333333";
+
+	for(var i = 0; i < col; i++){
+		for(var j = 0; j < col; j++){
+			if(board[i][j]){
+				context.fillRect(j * this.unit + 1, i * this.unit + 1, this.unit - 2, this.unit - 2);
+			}
+		}
+	}
+
+};
+Board.prototype.drawState = function() {
+	// body...
+};
+window.onload = initBoard;
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
