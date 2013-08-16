@@ -8,9 +8,10 @@ var initialLights = [[4,4],[0,4],[2,3]];
 function initBoard(){
 	var l = new LightsOut(board);
 	var b = l.createBoard();
+	l.setLights(initialLights);
+	l.toggle(1,4)
 	b.drawBoard(l.board);
 	b.drawState(l.state);
-	// l.setLights(initialLights);
 	// l.run();
 
 }
@@ -70,6 +71,12 @@ var LightsOut = function(board){
 	this.tilesY = tilesY;
 	this.state = mkZeroMatrix(tilesX, tilesY);
 }
+LightsOut.prototype.setLights = function(lights) {
+	for(var i = 0; i < lights.length; i++){
+		this.state[lights[i][0]][lights[i][1]] = 1;
+	}
+	this.state = matop(this.state, this.board, AND);
+};
 LightsOut.prototype.toggle = function(x, y) {
 	var toggleMatrix = mkZeroMatrix(this.tilesX, this.tilesX);
 	toggleMatrix[x][y] = 1;
@@ -117,8 +124,18 @@ Board.prototype.drawBoard = function(board) {
 	}
 
 };
-Board.prototype.drawState = function() {
-	// body...
+Board.prototype.drawState = function(board) {
+	var context = this.canvas.getContext('2d');
+	var row = board.length;
+	var col = board[0].length;
+	context.fillStyle="#CC7755";
+	for(var i = 0; i < col; i++){
+		for(var j = 0; j < col; j++){
+			if(board[i][j]){
+				context.fillRect(j * this.unit + 2, i * this.unit + 2, this.unit - 4, this.unit - 4);
+			}
+		}
+	}
 };
 window.onload = initBoard;
 		</script>
