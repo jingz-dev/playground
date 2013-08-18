@@ -4,17 +4,27 @@
 		<title>Lights Out</title>
 		<script>
 var board = [[0,0,0,0,1],[0,0,0,1,1],[0,0,1,1,1],[0,1,1,1,1],[1,1,1,1,1]];
-var initialLights = [[4,4],[0,4],[2,3]];
+// var board = [[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]];
+var initialLights = [[4,4],[1,4],[2,3],[3,3]];
+var l;
+var b;
 function initBoard(){
-	var l = new LightsOut(board);
-	var b = l.createBoard();
+	l = new LightsOut(board);
+	b = l.createBoard();
 	l.setLights(initialLights);
-	l.toggle(1,4)
 	b.drawBoard(l.board);
 	b.drawState(l.state);
-	// l.run();
-
+	b.click(boardClick);
 }
+function boardClick(x, y){
+	var win = l.toggle(x, y);
+	b.drawBoard(l.board);
+	b.drawState(l.state);
+	if(win){
+		alert("WIN");
+	}
+}
+
 function isZeroMatrix(a){
 	var row = a.length;
 	var col = a[0].length;
@@ -34,6 +44,9 @@ function mkZeroMatrix(col, row){
 		}
 	}
 	return s;
+}
+function winCondition(board, state){
+	return isZeroMatrix(matop(board, state, AND));
 }
 // matrix operation
 function matop(a, b, op){
@@ -90,6 +103,10 @@ LightsOut.prototype.toggle = function(x, y) {
 		toggleMatrix[x][y+1] = 1;
 	this.state = matop(this.state, toggleMatrix, XOR);
 	this.state = matop(this.state, this.board, AND);
+	if(winCondition(this.board, this.state)){
+		return true;
+	}
+	return false;
 };
 LightsOut.prototype.createBoard = function(elem) {
 	return new Board(this.tilesX, this.tilesY, elem);
@@ -136,6 +153,16 @@ Board.prototype.drawState = function(board) {
 			}
 		}
 	}
+};
+Board.prototype.click = function(f) {
+	var unit = this.unit;
+	var canvas = this.canvas;
+	canvas.addEventListener("click", function(e){
+		var x = parseInt(e.offsetX / unit);
+		var y = parseInt(e.offsetY / unit);
+		f(y, x);
+	});
+
 };
 window.onload = initBoard;
 		</script>
