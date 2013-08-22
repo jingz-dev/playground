@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/*
+Goal:
+to predict mouse movement within the next short period of time
+*/
+var RingQueue = function(slots){
+	this.ringQueue = new Array(slots);
+	this.rotation = 0;
+	this.currentSize = 0;
+	this.maxSize = slots;
+}
+// val:[x, y, time]
+RingQueue.prototype.append = function(val){
+	this.ringQueue[++this.rotation % this.maxSize] = val;
+	if(this.currentSize < this.maxSize)
+		this.currentSize++;
+}
+RingQueue.prototype.left = function(){
+	return this.ringQueue[(this.rotation + this.maxSize - this.currentSize + 1) % this.maxSize];
+}
+RingQueue.prototype.popleft = function(){
+	if(this.currentSize == 0)
+		return null;
+	return this.ringQueue[(this.rotation + this.maxSize - this.currentSize-- + 1) % this.maxSize];	
+}
+RingQueue.prototype.forEach = function(f){
+	for(var i=0; i < this.currentSize; i++){
+		f(this.ringQueue[(this.rotation + this.maxSize - this.currentSize + i + 1) % this.maxSize]);
+	}
+}
+
+function print(str){
+	console.log(str);
+}
+// test
+var h = new RingQueue(3);
+h.append(1);
+print(h.popleft());
+h.append(2);
+print(h.left());
+h.append(3);
+print(h.left());
+h.append(4);
+print(h.left());
+</script>
+</head>
+<body>
+<canvas width = "800" height = "600" id = "testzone"></canvas>
+</body>
+</html>
