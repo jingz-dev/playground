@@ -5,6 +5,9 @@ function assert(bool){
 		throw "assertion failed";
 	}
 }
+function isFunction(obj){
+	return !!(obj && obj.constructor && obj.call && obj.apply);
+}
 
 var Quadtree = function(p, depth){
 	this.x = p.x;
@@ -46,12 +49,20 @@ Quadtree.prototype.insert = function(p){
 	if(list.length < this.MAXOBJCOUNT){
 		return;
 	}
-
 }
+
 Quadtree.prototype.retrieve = function(p){
 
 }
-
+Quadtree.runTests = function(){
+	for(var f in Quadtree.test){
+		var func = Quadtree.test[f];
+		if(isFunction(func)){
+			func();
+			console.log(f + "() test case complete");
+		}
+	}
+}
 Quadtree.test = {};
 Quadtree.test.getSection = function(){
 	var p = {};
@@ -62,6 +73,12 @@ Quadtree.test.getSection = function(){
 	t.y = 3;
 	var q = new Quadtree(p);
 	assert(q.getSection(t) == 1);
+
+	p.x = 4;
+	p.y = 4;
+	q = new Quadtree(p);
+	assert(q.getSection(t) == 3);
 }
+
 this.Quadtree = Quadtree;
 })(this);
