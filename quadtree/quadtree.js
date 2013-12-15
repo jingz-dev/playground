@@ -1,21 +1,28 @@
 (function(global){
 
-function assert(bool){
-	if(!bool){
-		throw "assertion failed";
+function assertEqual(expected, actual, desc){
+	if(expected != actual){
+		throw "assertion failed " + desc + "\nexpected:" + expected + "\nactual:"+ actual;
 	}
 }
 function isFunction(obj){
 	return !!(obj && obj.constructor && obj.call && obj.apply);
 }
 
-var Quadtree = function(p, depth){
-	this.x = p.x;
-	this.y = p.y;
-};
-Quadtree.to2D = function(p){
-	return {x: p.x, y: p.y};
+// new Point(num, num)
+var Point = function(x, y){
+	this.x = x;
+	this.y = y;
 }
+// new Rectangle(Point, Point)
+var Rectangle = function(a, b){
+	this.a = a;
+	this.b = b;
+}
+
+var Quadtree = function(rect, depth){
+	this.range = rect;
+};
 
 Quadtree.prototype.MAXOBJCOUNT = 16;
 Quadtree.prototype.x = 0;
@@ -23,9 +30,10 @@ Quadtree.prototype.y = 0;
 Quadtree.prototype.node = null;
 Quadtree.prototype.list = [];
 Quadtree.prototype.getSection = function(p){
+	// returns the quadrant of point p in the quadtree range
 	var v = {};
-	v.x = p.x - this.x / 2;
-	v.y = p.y - this.y / 2;
+	v.x = p.x - (this.range.a.x + this.range.b.x) / 2;
+	v.y = p.y - (this.range.a.y + this.range.b.y) / 2;
 	if(v.x * v.y == 0){
 		return -1;
 	}
@@ -45,10 +53,8 @@ Quadtree.prototype.split = function(){
 
 }
 Quadtree.prototype.insert = function(p){
-	this.list.push(Quadtree.to2D(p));
-	if(list.length < this.MAXOBJCOUNT){
-		return;
-	}
+	// this.list
+
 }
 
 Quadtree.prototype.retrieve = function(p){
@@ -65,19 +71,16 @@ Quadtree.runTests = function(){
 }
 Quadtree.test = {};
 Quadtree.test.getSection = function(){
-	var p = {};
-	p.x = 512;
-	p.y = 512;
-	var t = {};
-	t.x = 3;
-	t.y = 3;
-	var q = new Quadtree(p);
-	assert(q.getSection(t) == 1);
+	var a = new Point(0, 0);
+	var b = new Point(512, 512);
+	var t = new Point(3,3);
+	var q = new Quadtree(new Rectangle(a, b));
+ 	assertEqual(1, q.getSection(t),  "getSection() test 1");
 
-	p.x = 4;
-	p.y = 4;
-	q = new Quadtree(p);
-	assert(q.getSection(t) == 3);
+ 	b = new Point(4, 4);
+	q = new Quadtree(new Rectangle(a, b));
+	assertEqual(3, q.getSection(t), "getSection() test 2");
+
 }
 
 this.Quadtree = Quadtree;
