@@ -20,6 +20,12 @@ var Rectangle = function(a, b){
 	this.b = b;
 }
 
+var QuadData = function(id, rect, data){
+	this.range = rect;
+	this.id = id;
+	this.data = data;
+}
+
 var Quadtree = function(rect, depth){
 	this.range = rect;
 };
@@ -50,7 +56,10 @@ Quadtree.prototype.getSection = function(p){
 	}
 }
 Quadtree.prototype.split = function(){
+	// splits the quadtree into 4 quadtrees
+	for(var i = 0; i < this.list.length; i++){
 
+	}
 }
 Quadtree.prototype.insert = function(p){
 	// this.list
