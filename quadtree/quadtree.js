@@ -55,7 +55,23 @@ var QuadData = function(id, rect, data){
 }
 
 var Quadtree = function(rect, depth){
+	// quadrants:
+	//  ------> 
+	// | 2 3
+	// | 1 0
+	// v
 	this.range = rect;
+	var ax = rect.a.x;
+	var ay = rect.a.y;
+	var bx = rect.b.x;
+	var by = rect.b.y;
+	var mx = (ax + bx) / 2;
+	var my = (ay + by) / 2; 
+
+	this.quadrants = new Array(4);
+
+
+	this.quadrants[0] = new Rectangle();
 };
 
 Quadtree.prototype.MAXOBJCOUNT = 16;
@@ -63,6 +79,7 @@ Quadtree.prototype.x = 0;
 Quadtree.prototype.y = 0;
 Quadtree.prototype.node = null;
 Quadtree.prototype.list = [];
+Quadtree.prototype.quadrants = [];
 Quadtree.prototype.getSection = function(r){
 	return 0;
 	// returns the quadrant of point p in the quadtree range
