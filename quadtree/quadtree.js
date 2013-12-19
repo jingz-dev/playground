@@ -15,10 +15,38 @@ var Point = function(x, y){
 	this.y = y;
 }
 // new Rectangle(Point, Point)
-var Rectangle = function(a, b){
-	this.a = a;
-	this.b = b;
+var Rectangle = function(ax, ay, bx, by){
+	var t = 0;
+	// flip points to ensure a is the upper left, b is lower right
+	if(ax > bx){
+		t = ax;
+		ax = bx;
+		bx = t;
+	}
+	if(ay > by){
+		t = ay;
+		ay = by;
+		by = t;
+	}
+	this.a = new Point(ax, ay);
+	this.b = new Point(bx, by);
 }
+// cmp: 0 overlap / 1 include / -1 other
+Rectangle.prototype.compareTo = function(rect){
+	if(this.a.x == rect.a.x && this.a.y == rect.a.y &&
+		this.b.x == rect.b.x && this.b.y == rect.b.y
+		){
+		return 0;
+	}
+
+	if(this.a.x <= rect.a.x && this.b.x >= rect.b.x &&
+		this.a.y <= rect.a.y && this.b.y >= rect.b.y
+		){
+		return 1;
+	}
+	return -1;
+}
+
 
 var QuadData = function(id, rect, data){
 	this.range = rect;
@@ -35,7 +63,8 @@ Quadtree.prototype.x = 0;
 Quadtree.prototype.y = 0;
 Quadtree.prototype.node = null;
 Quadtree.prototype.list = [];
-Quadtree.prototype.getSection = function(p){
+Quadtree.prototype.getSection = function(r){
+	return 0;
 	// returns the quadrant of point p in the quadtree range
 	var v = {};
 	v.x = p.x - (this.range.a.x + this.range.b.x) / 2;
@@ -80,17 +109,17 @@ Quadtree.runTests = function(){
 }
 Quadtree.test = {};
 Quadtree.test.getSection = function(){
-	var a = new Point(0, 0);
-	var b = new Point(512, 512);
-	var t = new Point(3,3);
-	var q = new Quadtree(new Rectangle(a, b));
- 	assertEqual(1, q.getSection(t),  "getSection() test 1");
-
- 	b = new Point(4, 4);
-	q = new Quadtree(new Rectangle(a, b));
-	assertEqual(3, q.getSection(t), "getSection() test 2");
-
+	var q = new Quadtree(new Rectangle(4, 4, 8, 8));
+	var t = [];
+	t.push(new Rectangle(4,4,6,6));
+	t.push(new Rectangle(6,6,8,8));
+	t.push(new Rectangle(4,6,6,8));
+	t.push(new Rectangle(6,4,8,6));
+	for(var i = 0; i < t.length; i++){
+		assertEqual(-1, q.getSection(t[i]), "bounds test" + i);
+	}
 }
 
 this.Quadtree = Quadtree;
+this.Rectangle = Rectangle;
 })(this);
