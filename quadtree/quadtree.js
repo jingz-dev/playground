@@ -61,17 +61,9 @@ var Quadtree = function(rect, depth){
 	// | 1 0
 	// v
 	this.range = rect;
-	var ax = rect.a.x;
-	var ay = rect.a.y;
-	var bx = rect.b.x;
-	var by = rect.b.y;
-	var mx = (ax + bx) / 2;
-	var my = (ay + by) / 2; 
-
-	this.quadrants = new Array(4);
 
 
-	this.quadrants[0] = new Rectangle();
+
 };
 
 Quadtree.prototype.MAXOBJCOUNT = 16;
@@ -103,13 +95,28 @@ Quadtree.prototype.getSection = function(r){
 }
 Quadtree.prototype.split = function(){
 	// splits the quadtree into 4 quadtrees
-	for(var i = 0; i < this.list.length; i++){
+	var rect = this.range;
 
-	}
+	var ax = rect.a.x;
+	var ay = rect.a.y;
+	var bx = rect.b.x;
+	var by = rect.b.y;
+	var mx = (ax + bx) / 2;
+	var my = (ay + by) / 2;
+	this.node = new Array(4);
+	this.node[0] = new Quadtree(new Rectangle(mx,my,bx,by));
+	this.node[1] = new Quadtree(new Rectangle(ax,my,mx,by));
+	this.node[2] = new Quadtree(new Rectangle(ax,ay,mx,my));
+	this.node[3] = new Quadtree(new Rectangle(mx,ay,bx,my));
+
 }
-Quadtree.prototype.insert = function(p){
-	// this.list
-
+// inserts one quaddata into the quadtree. if the node is full
+Quadtree.prototype.insert = function(qd){
+	if(this.list.length >= this.MAXOBJCOUNT){
+		if(this.node == null){
+			this.split();
+		}
+	}
 }
 
 Quadtree.prototype.retrieve = function(p){
